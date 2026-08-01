@@ -1,0 +1,17 @@
+# Local Python environment
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Generated training data and model checkpoints
+data/
+model_output/
+
+# Notebook and editor state
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Local configuration
+.env
