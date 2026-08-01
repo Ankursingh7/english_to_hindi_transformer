@@ -1,65 +1,198 @@
-# English to Hindi Neural Machine Translation using Hugging Face Transformers
+# English to Hindi Transformer-Based Machine Translation
 
-A beginner-friendly B.Tech CSE (AI & ML) project to fine-tune a Transformer-based Seq2Seq model (`Helsinki-NLP/opus-mt-en-hi`) for translating English text to Hindi.
+## Overview
 
----
+This project implements a Transformer-based Neural Machine Translation (NMT) system that translates text from English to Hindi. The model is fine-tuned on a bilingual parallel corpus to generate accurate Hindi translations while preserving the meaning of the input sentence. The project demonstrates the complete machine translation pipeline, including data preprocessing, tokenization, model training, evaluation, and inference.
 
-## 📁 Project Structure
+## Features
 
-```
+- English to Hindi text translation
+- Transformer-based architecture using Hugging Face Transformers
+- Tokenization using a pretrained tokenizer
+- Fine-tuning on bilingual parallel datasets
+- Evaluation using BLEU score
+- Interactive inference for translating custom sentences
+- Modular and beginner-friendly project structure
+
+## Technology Stack
+
+- Python 3.10+
+- PyTorch
+- Hugging Face Transformers
+- Hugging Face Datasets
+- SentencePiece
+- NumPy
+- Pandas
+- Scikit-learn
+- Evaluate
+- Matplotlib
+- VS Code
+
+## Project Structure
+
+```text
 english_to_hindi_transformer/
+│
 ├── data/
-│   └── sample_en_hi.csv      # Sample dataset of parallel English-Hindi sentence pairs
-├── src/
-│   ├── dataset.py            # Data loading, cleaning, and tokenization logic
-│   ├── train.py              # Fine-tuning loop using Hugging Face Seq2SeqTrainer
-│   ├── evaluate.py           # Evaluates model performance using BLEU score
-│   └── inference.py          # Interactive command-line translation tool
-├── requirements.txt          # Python dependencies
-├── README.md                 # Project instructions & overview
-└── viva_prep.md              # College Viva questions, answers & presentation guide
+│   ├── train.csv
+│   ├── validation.csv
+│   └── test.csv
+│
+├── models/
+│
+├── checkpoints/
+│
+├── train.py
+├── inference.py
+├── preprocess.py
+├── evaluate_model.py
+├── utils.py
+├── requirements.txt
+├── README.md
+└── outputs/
 ```
 
----
+## Installation
 
-## ⚡ Quick Start Guide (VS Code)
+Clone the repository:
 
-### Step 1: Open project in VS Code
-Open VS Code and navigate to `File > Open Folder...` and select `english_to_hindi_transformer`.
+```bash
+git clone <repository-url>
+cd english_to_hindi_transformer
+```
 
-### Step 2: Set up Virtual Environment
-Open the terminal in VS Code (`Ctrl + ~`) and run:
+Create a virtual environment:
+
 ```bash
 python -m venv venv
-venv\Scripts\activate      # On Windows PowerShell
-# source venv/bin/activate  # On Linux/macOS
 ```
 
-### Step 3: Install Dependencies
+Activate the environment.
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux/macOS
+
+```bash
+source venv/bin/activate
+```
+
+Install the required packages:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Run Training
-Fine-tune the pre-trained Helsinki-NLP model on the dataset:
+## Dataset
+
+The project uses an English-Hindi parallel corpus containing aligned sentence pairs.
+
+Example:
+
+| English | Hindi |
+| --- | --- |
+| Good Morning | सुप्रभात |
+| How are you? | आप कैसे हैं? |
+| I love machine learning. | मुझे मशीन लर्निंग पसंद है। |
+
+The dataset is divided into:
+
+- Training Set
+- Validation Set
+- Test Set
+
+## Training
+
+Train the model using:
+
 ```bash
-python src/train.py
+python train.py
 ```
 
-### Step 5: Evaluate the Model (BLEU Score)
+During training the model:
+
+- Loads the dataset
+- Tokenizes English and Hindi sentences
+- Fine-tunes the Transformer model
+- Saves checkpoints after each epoch
+- Stores the best-performing model
+
+## Model Evaluation
+
+Evaluate the trained model using:
+
 ```bash
-python src/evaluate.py
+python evaluate_model.py
 ```
 
-### Step 6: Run Interactive Translation Inference
+Evaluation metrics include:
+
+- BLEU Score
+- Validation Loss
+
+## Inference
+
+Translate custom English sentences:
+
 ```bash
-python src/inference.py
+python inference.py
 ```
 
----
+Example:
 
-## 🎯 Model Architecture Overview
-- **Model Base**: MarianMT (`Helsinki-NLP/opus-mt-en-hi`)
-- **Architecture**: Transformer Encoder-Decoder (Seq2Seq)
-- **Tokenization**: SentencePiece subword tokenization
-- **Metric**: BLEU Score (via Hugging Face `evaluate` & `sacrebleu`)
+Input
+
+```text
+The weather is pleasant today.
+```
+
+Output
+
+```text
+आज मौसम सुहावना है।
+```
+
+## Applications
+
+- Language translation
+- Educational tools
+- Government document translation
+- Digital communication
+- AI-based language learning
+- Research in Natural Language Processing
+
+## Future Improvements
+
+- Support multiple Indian languages
+- Deploy using FastAPI
+- Build a web interface with Streamlit
+- Improve translation accuracy with larger datasets
+- Add speech-to-text and text-to-speech capabilities
+
+## Learning Outcomes
+
+Through this project, the following concepts were explored:
+
+- Neural Machine Translation
+- Transformer architecture
+- Tokenization
+- Transfer learning
+- Fine-tuning pretrained models
+- Model evaluation
+- Natural Language Processing using PyTorch and Hugging Face
+
+## Conclusion
+
+This project demonstrates a complete English-to-Hindi Neural Machine Translation system using Transformer models. It provides practical experience with modern NLP techniques, including data preprocessing, model training, evaluation, and inference. The implementation serves as a strong foundation for understanding Transformer-based translation systems and can be extended to support additional languages and advanced NLP applications.
+
+## Author
+
+**Ankur Singh**
+
+B.Tech CSE (AI & ML)
+
+GLA University, Mathura
