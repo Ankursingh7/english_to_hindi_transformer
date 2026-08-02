@@ -1,4 +1,6 @@
 import torch
+import argparse
+import os
 from transformers import (
     AutoModelForSeq2SeqLM,
     DataCollatorForSeq2Seq,
@@ -8,8 +10,19 @@ from transformers import (
 from dataset import load_en_hi_dataset, preprocess_and_tokenize, MODEL_NAME
 
 
+def latest_checkpoint(output_dir):
+    """Return the most recent Trainer checkpoint, if this run can resume."""
+    if not os.path.isdir(output_dir):
+        return None
+    checkpoints = [
+        entry.path for entry in os.scandir(output_dir)
+        if entry.is_dir() and entry.name.startswith("checkpoint-")
+    ]
+    return max(checkpoints, key=os.path.getmtime, default=None)
+
+
 def train_model(
-    csv_path="data/sample_en_hi_large.csv",
+    csv_path="data/sample_en_hi_20k.csv",
     use_hf_dataset=False,
     output_dir="./model_output",
     epochs=3,
@@ -66,8 +79,11 @@ def train_model(
         data_collator=data_collator,
     )
 
-    print("[INFO] Starting fine-tuning training loop on 2,000 sentence pairs...")
-    trainer.train()
+    print(f"[INFO] Starting fine-tuning training loop on {len(tokenized_dataset['train']):,} sentence pairs...")
+    resume_checkpoint = latest_checkpoint(output_dir)
+    if resume_checkpoint:
+        print(f"[INFO] Resuming training from '{resume_checkpoint}'...")
+    trainer.train(resume_from_checkpoint=resume_checkpoint)
 
     print(f"[INFO] Saving fine-tuned model and tokenizer to '{output_dir}'...")
     model.save_pretrained(output_dir)
@@ -76,4 +92,10 @@ def train_model(
 
 
 if __name__ == "__main__":
-    train_model(epochs=3, batch_size=8)
+    parser = argparse.ArgumentParser(description="Fine-tune English-to-Hindi translation model.")
+    parser.add_argument("--data", default="data/sample_en_hi_20k.csv", help="Path to English-Hindi CSV")
+    parser.add_argument("--output-dir", default="./model_output", help="Directory for model artifacts")
+    parser.add_argument("--epochs", type=float, default=3, help="Number of training epochs")
+    parser.add_argument("--batch-size", type=int, default=8, help="Per-device batch size")
+    args = parser.parse_args()
+    train_model(csv_path=args.data, output_dir=args.output_dir, epochs=args.epochs, batch_size=args.batch_size)

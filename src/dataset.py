@@ -15,7 +15,17 @@ if sys.platform == "win32":
 MODEL_NAME = "Helsinki-NLP/opus-mt-en-hi"
 
 
-def load_en_hi_dataset(csv_path="data/sample_en_hi_large.csv", use_hf_dataset=False):
+def _repair_mojibake(text):
+    """Repair UTF-8 Hindi text that was accidentally decoded as Latin-1."""
+    if not isinstance(text, str):
+        return text
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+
+
+def load_en_hi_dataset(csv_path="data/sample_en_hi_20k.csv", use_hf_dataset=False):
     if use_hf_dataset:
         print("[INFO] Loading dataset 'Helsinki-NLP/opus-100' (en-hi) from Hugging Face...")
         try:
@@ -34,6 +44,7 @@ def load_en_hi_dataset(csv_path="data/sample_en_hi_large.csv", use_hf_dataset=Fa
         df = pd.read_csv(csv_path, encoding='utf-8')
 
     df = df[["english", "hindi"]].dropna().reset_index(drop=True)
+    df["hindi"] = df["hindi"].map(_repair_mojibake)
     print(f"[SUCCESS] Successfully loaded {len(df)} sentence pairs.")
     return df
 
@@ -55,14 +66,14 @@ def preprocess_and_tokenize(df, max_length=128, test_size=0.2):
             inputs,
             max_length=max_length,
             truncation=True,
-            padding="max_length",
+            padding=False,
         )
         
         labels = tokenizer(
             text_target=targets,
             max_length=max_length,
             truncation=True,
-            padding="max_length",
+            padding=False,
         )
 
         model_inputs["labels"] = labels["input_ids"]
